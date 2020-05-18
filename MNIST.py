@@ -42,14 +42,15 @@ model = Net()
 #criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=3e-4) #derived from torch library itslef
 criterion = nn.CrossEntropyLoss()
+
 """5. TRAINING THE MODEL"""
 
-for epoch in range(10):
+for epoch in range(1):
+    print('epoch: {}'.format(epoch))
     for batch_idx, data_target in enumerate(train_loader):
         
         data = data_target[0]
         target = data_target[1]
-
 
         data = data.view(-1, 28 * 28)
         optimizer.zero_grad()
@@ -57,5 +58,24 @@ for epoch in range(10):
         output = model(data)
 
         loss = criterion(output,target)
+        
         loss.backward()
         optimizer.step()
+
+
+"""6. Evaluating the model"""
+
+correct, total = 0,0
+predictions = []
+model.eval()
+
+for i, data in enumerate(test_loader,0):
+    inputs, labels = data # inputs are tensors of images, labels are classes
+    inputs = inputs.view(-1, 28 * 28)
+    outputs = model(inputs) # use model to predict from test_loader
+    _, predicted = torch.max(outputs,1) # generate a prediction
+    predictions.append(outputs) 
+    total += labels.size(0)
+    correct += (predicted==labels).sum().item()
+
+print('The testing set accuracy of the network is: %d %%' % (100 * correct / total))
