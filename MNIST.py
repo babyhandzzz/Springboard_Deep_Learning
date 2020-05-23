@@ -45,37 +45,25 @@ criterion = nn.CrossEntropyLoss()
 
 """5. TRAINING THE MODEL"""
 
-for epoch in range(1):
+for epoch in range(3):
     print('epoch: {}'.format(epoch))
+    print(len(train_loader))
+    # enumerate batches
     for batch_idx, data_target in enumerate(train_loader):
-        
+    # tensors of digits are the 0th iterable
         data = data_target[0]
+    # vectors of labels the 1st iterable
         target = data_target[1]
-
+    # flatten the tensor into an array
         data = data.view(-1, 28 * 28)
+    # clear gradients
         optimizer.zero_grad()
-        
+    # generate predictions
         output = model(data)
-
+    # calculate loss
         loss = criterion(output,target)
-        
+
+    # calculate and sum up all the gradients 
         loss.backward()
+    # take on optimization step (controlled by the learning rate)
         optimizer.step()
-
-
-"""6. Evaluating the model"""
-
-correct, total = 0,0
-predictions = []
-model.eval()
-
-for i, data in enumerate(test_loader,0):
-    inputs, labels = data # inputs are tensors of images, labels are classes
-    inputs = inputs.view(-1, 28 * 28)
-    outputs = model(inputs) # use model to predict from test_loader
-    _, predicted = torch.max(outputs,1) # generate a prediction
-    predictions.append(outputs) 
-    total += labels.size(0)
-    correct += (predicted==labels).sum().item()
-
-print('The testing set accuracy of the network is: %d %%' % (100 * correct / total))
