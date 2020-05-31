@@ -1,3 +1,8 @@
+"""
+This file is the simplest implementation of NN
+using the MNIST datatset.
+"""
+
 # dataloading imports
 import torch 
 import torchvision
